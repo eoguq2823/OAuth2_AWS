@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.study.oauth2.entity.User;
 import com.study.oauth2.repository.UserRepository;
@@ -48,8 +49,27 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 						+ "&name=" + URLEncoder.encode(name, "UTF-8")
 						+ "&provider=" + provider
 				);
-		} else {
-			//만약에 계정이 있는데 provider가 잡혀있지않으면? 통합시킬거냐?
+		} else { 
+			// 회원가입이 되어 있고 provider가 등록된 경우
+			if(StringUtils.hasText(userEntity.getProvider())) {
+				// 하지만 로그인된 oauth2 계정의 provider는 등록이 안된 경우
+				if(!userEntity.getProvider().contains(provider)) {
+					response.sendRedirect(
+								"http://localhost:3000/auth/oauth2/merge" 
+								+ "?provider=" + provider
+								+ "&email=" + email
+					);
+				}
+				
+			} else {
+				// 회원가입은 되어 있는데 provider가 null인 경우
+				response
+					.sendRedirect(
+								"http://localhost:3000/auth/oauth2/merge" 
+								+ "?provider=" + provider
+								+ "&email=" + email
+					);
+			}
 		}
 		
 

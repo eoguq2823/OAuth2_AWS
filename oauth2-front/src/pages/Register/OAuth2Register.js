@@ -18,14 +18,14 @@ const OAuth2Register = () => {
             return response;
         } catch(error) {
             alert("페이지가 만료되었습니다.")
-            window.localtion.replace("/auth/login");
+            window.location.replace("/auth/login");
             return error;
         }
     }, {
         onSuccess: (response) => {
             if(response.status === 200) {
                 alert("회원가입완료.");
-                window.localtion.replace("/auth/login");
+                window.location.replace("/auth/login");
             }
         }
     });
